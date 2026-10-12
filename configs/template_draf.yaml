@@ -1,0 +1,74 @@
+# configs/template_draf.yaml
+# Template draf yang SAMA untuk Single-Agent dan Multi-Agent.
+# Heading di sini juga dipakai untuk memecah keluaran Single-Agent per bagian,
+# jadi teks heading harus persis sama dengan yang diminta di prompt.
+
+versi: 1
+
+heading_level: 2                # jumlah # pada heading bagian (##)
+penanda_tabel: "{{TABEL:{id}}}" # contoh hasil: {{TABEL:T1}}
+penempatan_tabel: sebelum_narasi   # sebelum_narasi | sesudah_narasi
+penomoran_tabel: "Tabel {n}"       # T1 -> Tabel 1, urut sesuai ID
+caption_tabel: "Tabel {n}. {keterangan}"
+toleransi_panjang_persen: 10    # toleransi di luar rentang kata sebelum dianggap gagal struktur
+
+urutan_bagian:
+  - judul
+  - abstrak
+  - pendahuluan
+  - metode
+  - hasil_pembahasan
+  - kesimpulan
+  - daftar_pustaka
+
+bagian:
+  judul:
+    dibuat_oleh: kode
+    sumber: metadata.judul
+
+  abstrak:
+    heading: Abstrak
+    dibuat_oleh: synthesizer
+    field_state: abstrak
+    target_kata: {min: 150, max: 250}
+    memakai_referensi: false
+    isi_wajib: [latar belakang, tujuan, metode, hasil utama, kesimpulan]
+
+  pendahuluan:
+    heading: Pendahuluan
+    dibuat_oleh: agen_pendahuluan
+    field_state: pendahuluan
+    target_kata: {min: 300, max: 500}
+    memakai_referensi: true
+    sub_isi: [latar belakang masalah, penelitian terdahulu, celah penelitian, tujuan penelitian]
+
+  metode:
+    heading: Metode
+    dibuat_oleh: agen_metode
+    field_state: metode_teks
+    target_kata: {min: 150, max: 300}
+    memakai_referensi: true      # hanya jika metode atau metrik perlu rujukan
+    sub_isi: [data, langkah penelitian, metrik evaluasi]
+
+  hasil_pembahasan:
+    heading: Hasil dan Pembahasan
+    dibuat_oleh: agen_pembahasan
+    field_state: pembahasan
+    target_kata: {min: 400, max: 700}
+    memakai_referensi: true
+    memakai_tabel: true
+    wajib_simpan_penanda: true   # penanda tabel dari template tidak boleh dihapus agen
+    sub_isi: [narasi tiap tabel, perbandingan dengan literatur]
+
+  kesimpulan:
+    heading: Kesimpulan
+    dibuat_oleh: synthesizer
+    field_state: kesimpulan
+    target_kata: {min: 120, max: 250}
+    memakai_referensi: false
+    sub_isi: [jawaban tiap rumusan masalah]
+
+  daftar_pustaka:
+    heading: Daftar Pustaka
+    dibuat_oleh: kode
+    sumber: references

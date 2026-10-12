@@ -27,3 +27,6 @@ class DraftState(TypedDict):
     bagian_gagal: list[str]      # bagian yang perlu diulang
     retry_count: dict            # {'pendahuluan': 0, ...}
     log_penggunaan: list[dict]   # token, latensi, per node
+    
+    
+    

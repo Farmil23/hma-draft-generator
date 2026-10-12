@@ -1,10 +1,80 @@
+# configs/models.yaml
+# Satu-satunya tempat mengatur model dan parameter eksperimen.
+# Setelah minggu 7 (config dibekukan) file ini TIDAK diubah.
+# Nama model harus persis sama dengan ID di console Groq; cek ketersediaannya di akunmu.
+
+versi: 1
+provider: groq
+
 generator:
   model: llama-3.3-70b-versatile
+  keluarga: meta-llama          # harus BERBEDA dari keluarga judge
   temperature: 0.2
-judge:
-  model: openai/gpt-oss-120b   # keluarga berbeda dari generator
+  top_p: 1.0
+  seed: 42                      # best-effort; hasil bisa sedikit berbeda antar run
+  max_tokens:                   # batas token keluaran per panggilan
+    supervisor: 600
+    agen: 2048
+    synthesizer: 1536
+    single_agent: 6144          # seluruh draf dalam satu keluaran
+    validator_llm: 1024
+
+reference_processor:
+  model_dari: generator         # memakai model generator yang sama
   temperature: 0.0
+  max_tokens: 1024
+
+judge:
+  model: openai/gpt-oss-120b
+  keluarga: openai
+  temperature: 0.0
+  reasoning_effort: medium      # low | medium | high; reasoning token dihitung sebagai token keluar
+  max_tokens: 4096              # termasuk reasoning token
+  format_keluaran: json
+  pengulangan_penilaian: 2      # rubrik coherence dinilai 2x lalu dirata-rata
+
 retrieval:
-  top_k: 6
+  metode: embedding
+  embedding:
+    model: intfloat/multilingual-e5-small   # alternatif lebih kuat: intfloat/multilingual-e5-base
+    revision: null              # isi hash commit Hugging Face untuk mengunci versi bobot model
+    awalan_query: "query: "     # wajib untuk keluarga model E5
+    awalan_passage: "passage: " # wajib untuk keluarga model E5
+    normalisasi: true
+    perangkat: cpu              # cpu | cuda
+    panjang_maks_token: 512     # kueri/ringkasan lebih panjang dari ini terpotong
+    cache_embedding: true       # simpan embedding bank ke berkas agar identik antar run
+  top_k:                        # jumlah entri reference_bank per bagian
+    pendahuluan: 6
+    metode: 3
+    pembahasan: 6
+  kueri_per_bagian:             # field input yang digabung menjadi teks kueri tiap bagian
+    pendahuluan: [rumusan_masalah, gambaran_isi]
+    metode: [metode]
+    pembahasan: [rumusan_masalah, keterangan_tabel]
+  single_agent: gabungan_unik   # konteks Single-Agent = gabungan unik ketiga daftar di atas
+
 validator:
-  max_retry: 2
+  max_retry: 2                  # per bagian
+  gunakan_llm_untuk_klaim: true
+  toleransi_angka_mutlak: 0.05  # toleransi pembulatan saat mencocokkan angka ke tabel
+  jika_gagal_setelah_batas: terima_dengan_penanda   # bagian tetap dipakai, dicatat gagal
+
+eksperimen:
+  pengulangan: 3                # per skenario
+  skenario_target: 20
+  seed_dasar: 42
+  acak_urutan_ab: true          # urutan draf saat dinilai judge diacak
+  sembunyikan_identitas_sistem: true
+
+api:
+  max_concurrency: 2            # jaga agar tidak melewati limit Groq
+  timeout_detik: 120
+  max_percobaan_ulang: 5        # untuk error sementara / rate limit
+  backoff_awal_detik: 2
+  backoff_maks_detik: 60
+
+pencatatan:
+  folder_output: data/outputs
+  simpan_prompt: true           # untuk reproduktibilitas dan Bab 3
+  simpan_respons_mentah: true

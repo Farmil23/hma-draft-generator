@@ -9,12 +9,11 @@
 langgraph>=0.2
 langchain-core>=0.3
 
-# --- Provider LLM (pasang SESUAI model yang dipilih, hapus tanda # pada baris yang dipakai) ---
-# Generator dan judge harus dari KELUARGA MODEL BERBEDA, jadi biasanya perlu dua provider.
-langchain-openai>=0.2
-langchain-groq
-# langchain-google-genai>=2.0
-# langchain-anthropic>=0.3
+# --- Provider LLM: Groq (generator dan judge dari keluarga model berbeda, keduanya via Groq) ---
+langchain-groq>=0.2
+groq>=0.11
+# Provider lain (opsional, hanya jika suatu saat dipakai):
+# langchain-openai>=0.2
 
 # --- Validasi skema dan konfigurasi ---
 pydantic>=2.0
@@ -26,9 +25,9 @@ pymupdf>=1.24            # ekstrak teks PDF referensi
 pandas>=2.0              # baca tabel hasil, hitung fakta tabel
 openpyxl>=3.1            # baca input tabel .xlsx
 
-# --- Retrieval top-k (pilih salah satu pendekatan) ---
-scikit-learn>=1.3        # TF-IDF + cosine similarity (ringan, disarankan untuk mulai)
-# sentence-transformers>=2.7   # opsional: embedding, jika ingin retrieval berbasis embedding
+# --- Retrieval top-k berbasis embedding (model dijalankan lokal) ---
+sentence-transformers>=2.7   # membawa torch; untuk CPU saja, pasang torch CPU dulu:
+                             # pip install torch --index-url https://download.pytorch.org/whl/cpu
 
 # --- Pemrosesan teks ---
 pysbd>=0.3.4             # pemecah kalimat (aman untuk 'et al.', angka desimal)
