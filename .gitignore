@@ -1,0 +1,42 @@
+# ===== Rahasia (JANGAN PERNAH di-commit) =====
+.env
+.env.*
+!.env.example
+*.key
+secrets/
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# ===== Alat bantu dan cache =====
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+.deepeval/
+.deepeval-cache.json
+
+# ===== IDE dan OS =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ===== Data: file referensi (hak cipta, jangan di-commit) =====
+# Simpan DOI/URL sumber di input.json agar bisa diunduh ulang.
+data/scenarios/*/refs/
+
+# ===== Output saat pengembangan (hasil run final diarsipkan terpisah) =====
+data/outputs/
+logs/
+*.log
+tmp/
+.cache/

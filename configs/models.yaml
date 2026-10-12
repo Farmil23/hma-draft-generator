@@ -1,0 +1,10 @@
+generator:
+  model: llama-3.3-70b-versatile
+  temperature: 0.2
+judge:
+  model: openai/gpt-oss-120b   # keluarga berbeda dari generator
+  temperature: 0.0
+retrieval:
+  top_k: 6
+validator:
+  max_retry: 2
